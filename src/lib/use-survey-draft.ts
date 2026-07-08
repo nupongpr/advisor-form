@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 export type SurveyDraft = {
-  code: string; role?: string; ageBand?: string; field?: string; experience?: string;
+  code: string; role?: string; frequency?: string;
   likert: Record<string, number>; sus: Record<string, number>; open: Record<string, string>;
 };
 

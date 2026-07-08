@@ -28,9 +28,11 @@ This repository **is** the EXP002 "ThesisFlow" evaluation form — a **Next.js 1
 
 ## Deploy / environment
 
-- **Neon DB is already migrated** (`20260708072743_init`; tables `Response` + `Answer`). Live E2E is
-  verified (survey POST, admin auth, responses list, CSV export, SUS scoring). `prisma migrate deploy`
-  applies the committed migration on Vercel builds.
+- **Neon DB**: committed migrations in `prisma/migrations/` — `20260708072743_init`, then
+  `20260708085135_align_demographics_role_frequency` (demographics → `role` + `frequency`; drops the
+  old `ageBand`/`field`/`experience`). `prisma migrate deploy` applies pending migrations on Vercel
+  builds, or run it locally against Neon (warm the DB first — see P1001 note). Tables: `Response` +
+  `Answer`.
 - Env vars — set in **Vercel → Settings → Environment Variables** (local `.env` is git-ignored):
   `DATABASE_URL` (Neon), `ADMIN_PASSWORD`, `COOKIE_SECRET`. Local `.env` still holds placeholder
   `change-me-...` for the last two — use real values in production.
@@ -45,8 +47,9 @@ This repository **is** the EXP002 "ThesisFlow" evaluation form — a **Next.js 1
 
 This app digitizes **EXP002 rev.1** — a Thai questionnaire + usability instrument used to
 evaluate **"ThesisFlow"** (aka "Thesis Navigator" / "Thesis Flow System"), an AI-assisted graduate-
-thesis management platform. Respondents — **students, advisors, or committee members** — rate
-ThesisFlow after using it. This web form replaces the paper instrument.
+thesis management platform. Respondents — **students, advisors, or graduate-studies staff**
+(นักศึกษา / อาจารย์ที่ปรึกษา / เจ้าหน้าที่บัณฑิตศึกษา) — rate ThesisFlow after using it. This web
+form replaces the paper instrument.
 
 ### ThesisFlow domain (what the questions refer to)
 
@@ -69,7 +72,10 @@ log, Turnitin/Similarity report).
 
 ### Instrument structure (what the form implements)
 
-1. **Respondent info / demographics** — age band (<40, 41–50, 51–60, >60), role, field, experience.
+1. **Respondent info / demographics** (questionnaire ส่วนที่ 1) — **role** (นักศึกษา / อาจารย์ที่ปรึกษา /
+   เจ้าหน้าที่บัณฑิตศึกษา) + **usage frequency** (ทุกวัน / 1-2 ครั้ง/สัปดาห์ / 1-2 ครั้ง/เดือน /
+   น้อยกว่าเดือนละครั้ง). Both required. (The PDF's per-role record forms on pp.1–3 also carry age
+   bands, but this web form intentionally collects only the questionnaire's two fields.)
 2. **Likert questionnaire**, 5-point (5 = มากที่สุด … 1 = น้อยที่สุด), four sections:
    - System Quality & Usability (5 items)
    - Workflow & Functionality (5 items)
@@ -77,8 +83,10 @@ log, Turnitin/Similarity report).
    - Support Service (3 items)
 3. **Open-ended** — 3 free-text questions.
 4. **System Usability Scale (SUS)** — the standard 10 items, 5-point, alternating positive/negative
-   wording. Score with Brooke's formula → 0–100 (odd items: value − 1; even items: 5 − value;
-   sum × 2.5). The PDF carries the canonical English text alongside the Thai for each item.
+   wording, with agree/disagree anchors (5 = เห็นด้วยอย่างยิ่ง … 1 = ไม่เห็นด้วยอย่างยิ่ง; the Likert
+   sections keep the มากที่สุด/น้อยที่สุด anchors). Score with Brooke's formula → 0–100 (odd items:
+   value − 1; even items: 5 − value; sum × 2.5). The PDF carries the canonical English text alongside
+   the Thai for each item.
 
 UI language is **Thai**; keep Thai as the source-of-truth copy.
 
@@ -88,14 +96,20 @@ Exact Thai wording for every question lives **only** in `docs/2569-EXP002_rv1_in
 font has no Unicode mapping, so text extraction drops all Thai. Recover the Latin/structural skeleton:
 
 ```
-pdftotext -layout docs/2569-EXP002_rv1_instr.pdf -    # poppler; on this machine at /mingw64/bin
+# structural/Latin skeleton only (Thai drops out):
+pdftotext -layout docs/2569-EXP002_rv1_instr.pdf -
+# real Thai copy — render pages to images and read them visually (poppler installed via winget):
+pdftoppm -png -r 200 docs/2569-EXP002_rv1_instr.pdf out/page   # then open out/page-*.png
 ```
 
-For actual Thai question copy, read the PDF **visually** (or get the text from the project owner) —
-do not reconstruct Thai wording from the extracted text.
+For actual Thai question copy, read the PDF **visually** (render to PNG as above — the embedded Thai
+font renders fine even though text extraction fails — or get the text from the project owner); do
+not reconstruct Thai wording from the extracted skeleton. The web form digitizes **pages 13–15**
+(satisfaction questionnaire + SUS); pages 1–12 are separate record forms, interview guides, and a
+before/after timing table.
 
-**Pending (owner dependency):** real Thai Likert copy still replaces `[PLACEHOLDER]` in
-`src/lib/questions.ts` (the SUS + open-ended copy is already real).
+**Done:** all questionnaire copy in `src/lib/questions.ts` is now the real Thai transcribed from the
+PDF — the 18 Likert items, 3 open-ended, 10 SUS items, and the four section titles (pages 13–15).
 
 ## Commands
 

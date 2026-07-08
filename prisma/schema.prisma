@@ -16,9 +16,7 @@ model Response {
   id         String   @id @default(cuid())
   code       String
   role       String
-  ageBand    String
-  field      String?
-  experience String?
+  frequency  String
   susScore   Float
   createdAt  DateTime @default(now())
   answers    Answer[]

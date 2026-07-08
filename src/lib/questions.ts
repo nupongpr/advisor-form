@@ -1,17 +1,17 @@
-export type Role = "student" | "advisor" | "committee";
-export type AgeBand = "<40" | "41-50" | "51-60" | ">60";
+export type Role = "student" | "advisor" | "staff";
+export type Frequency = "daily" | "weekly" | "monthly" | "rarely";
 
 export const ROLE_OPTIONS: { value: Role; label: string }[] = [
   { value: "student", label: "นักศึกษา" },
   { value: "advisor", label: "อาจารย์ที่ปรึกษา" },
-  { value: "committee", label: "กรรมการ" },
+  { value: "staff", label: "เจ้าหน้าที่บัณฑิตศึกษา" },
 ];
 
-export const AGE_OPTIONS: { value: AgeBand; label: string }[] = [
-  { value: "<40", label: "น้อยกว่า 40 ปี" },
-  { value: "41-50", label: "41–50 ปี" },
-  { value: "51-60", label: "51–60 ปี" },
-  { value: ">60", label: "มากกว่า 60 ปี" },
+export const FREQUENCY_OPTIONS: { value: Frequency; label: string }[] = [
+  { value: "daily", label: "ทุกวัน" },
+  { value: "weekly", label: "1-2 ครั้ง/สัปดาห์" },
+  { value: "monthly", label: "1-2 ครั้ง/เดือน" },
+  { value: "rarely", label: "น้อยกว่าเดือนละครั้ง" },
 ];
 
 export const SCALE_LABELS: Record<number, string> = {

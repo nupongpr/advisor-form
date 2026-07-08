@@ -12,10 +12,8 @@ const openMap = z
 
 export const surveyPayloadSchema = z.object({
   code: z.string().trim().min(1, "กรุณากรอกโค้ด").max(64),
-  role: z.enum(["student", "advisor", "committee"]),
-  ageBand: z.enum(["<40", "41-50", "51-60", ">60"]),
-  field: z.string().trim().max(200).optional(),
-  experience: z.string().trim().max(200).optional(),
+  role: z.enum(["student", "advisor", "staff"]),
+  frequency: z.enum(["daily", "weekly", "monthly", "rarely"]),
   likert: requiredScaleMap(LIKERT_KEYS),
   sus: requiredScaleMap(SUS_KEYS),
   open: openMap.optional(),

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { LIKERT_SECTIONS, SUS_ITEMS, OPEN_QUESTIONS, ROLE_OPTIONS } from "@/lib/questions";
+import { LIKERT_SECTIONS, SUS_ITEMS, OPEN_QUESTIONS, ROLE_OPTIONS, FREQUENCY_OPTIONS } from "@/lib/questions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,9 +28,7 @@ export default async function ResponseDetail({ params }: { params: Promise<{ id:
         <CardHeader><CardTitle>คำตอบของ {r.code}</CardTitle></CardHeader>
         <CardContent className="space-y-1 text-sm">
           <p>บทบาท: {roleLabel}</p>
-          <p>ช่วงอายุ: {r.ageBand}</p>
-          {r.field && <p>สาขา/หน่วยงาน: {r.field}</p>}
-          {r.experience && <p>ประสบการณ์: {r.experience}</p>}
+          <p>ความถี่ในการใช้งาน: {FREQUENCY_OPTIONS.find((o) => o.value === r.frequency)?.label ?? r.frequency}</p>
           <p>คะแนน SUS: <b>{r.susScore.toFixed(1)}</b></p>
         </CardContent>
       </Card>

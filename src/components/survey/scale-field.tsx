@@ -17,11 +17,15 @@ export function ScaleField({
   label,
   value,
   onChange,
+  lowLabel = "น้อยที่สุด",
+  highLabel = "มากที่สุด",
 }: {
   name: string;
   label: string;
   value?: number;
   onChange: (v: number) => void;
+  lowLabel?: string;
+  highLabel?: string;
 }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
@@ -53,8 +57,8 @@ export function ScaleField({
       </RadioGroup>
 
       <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-        <span>น้อยที่สุด</span>
-        <span>มากที่สุด</span>
+        <span>{lowLabel}</span>
+        <span>{highLabel}</span>
       </div>
     </div>
   );

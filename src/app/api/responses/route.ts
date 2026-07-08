@@ -23,8 +23,7 @@ export async function POST(req: NextRequest) {
   try {
     created = await prisma.response.create({
       data: {
-        code: p.code, role: p.role, ageBand: p.ageBand,
-        field: p.field ?? null, experience: p.experience ?? null,
+        code: p.code, role: p.role, frequency: p.frequency,
         susScore: scoreSus(p.sus),
         answers: { create: toAnswerRows(p) },
       },
@@ -41,7 +40,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   const responses = await prisma.response.findMany({
     orderBy: { createdAt: "desc" },
-    select: { id: true, code: true, role: true, ageBand: true, susScore: true, createdAt: true },
+    select: { id: true, code: true, role: true, frequency: true, susScore: true, createdAt: true },
   });
   return NextResponse.json({ responses });
 }
