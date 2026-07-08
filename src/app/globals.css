@@ -1,0 +1,153 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* base surfaces */
+  --background: #f8f9fa;         /* surface / background (grey-violet tint) */
+  --foreground: #191c1d;         /* on-background */
+  --card: #ffffff;              /* pure-white card (Level 1) */
+  --card-foreground: #191c1d;
+  --popover: #ffffff;
+  --popover-foreground: #191c1d;
+
+  /* brand */
+  --primary: #6b44b7;           /* light violet */
+  --primary-foreground: #ffffff;
+
+  --secondary: #e2e1ed;         /* secondary-container (pale) */
+  --secondary-foreground: #45464f;
+
+  --muted: #f3f4f5;             /* surface-container-low */
+  --muted-foreground: #667085;  /* text-muted */
+
+  --accent: #eaddff;            /* primary-fixed (pale violet) */
+  --accent-foreground: #25005a; /* on-primary-fixed (dark violet) */
+
+  --destructive: #ba1a1a;       /* error */
+  --destructive-foreground: #ffffff;
+
+  --border: #e4e7ec;            /* border-muted */
+  --input: #e4e7ec;
+  --ring: #6b44b7;              /* focus = primary */
+
+  --radius: 0.5rem;             /* interactive controls */
+
+  --chart-1: #6b44b7;
+  --chart-2: #855ed2;
+  --chart-3: #d2bbff;
+  --chart-4: #552ba0;
+  --chart-5: #caa82b;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #191c1d;
+  --sidebar-primary: #6b44b7;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaddff;
+  --sidebar-accent-foreground: #25005a;
+  --sidebar-border: #e4e7ec;
+  --sidebar-ring: #6b44b7;
+}
+
+.dark {
+  /* DERIVED — DESIGN.md is light-first (ships no dark ramp); tune ถ้ามี dark palette ทางการภายหลัง */
+  --background: #17151c;
+  --foreground: #f0f1f2;
+  --card: #201d27;
+  --card-foreground: #f0f1f2;
+  --popover: #201d27;
+  --popover-foreground: #f0f1f2;
+  --primary: #d2bbff;           /* inverse-primary */
+  --primary-foreground: #25005a;
+  --secondary: #45464f;
+  --secondary-foreground: #e2e1ed;
+  --muted: #2a2731;
+  --muted-foreground: #ccc3d4;
+  --accent: #552ba0;
+  --accent-foreground: #eaddff;
+  --destructive: #ffb4ab;
+  --destructive-foreground: #690005;
+  --border: #322f3b;
+  --input: #322f3b;
+  --ring: #d2bbff;
+  --chart-1: #d2bbff; --chart-2: #b79bf0; --chart-3: #855ed2; --chart-4: #eaddff; --chart-5: #e7c345;
+  --sidebar: #201d27;
+  --sidebar-foreground: #f0f1f2;
+  --sidebar-primary: #d2bbff;
+  --sidebar-primary-foreground: #25005a;
+  --sidebar-accent: #552ba0;
+  --sidebar-accent-foreground: #eaddff;
+  --sidebar-border: #322f3b;
+  --sidebar-ring: #d2bbff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* IBM Plex Sans Thai (next/font) → Noto Sans Thai fallback */
+  --font-sans: var(--font-thai), "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
+
+  /* radius (DESIGN.md): sm .25 / DEFAULT .5 / md .75 / lg 1 / xl 1.5 (cards) */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-full: 9999px;
+}
+
+/* soft diffused shadow: blur 15px, ~5% opacity, primary-tinted */
+@utility shadow-soft {
+  box-shadow: 0 4px 15px 0 rgb(107 68 183 / 0.05);
+}
+
+/* Thai type scale (DESIGN.md); line-height 1.5–1.6× กัน glyph ชน */
+@layer utilities {
+  .text-headline-lg { font-size: 1.875rem; line-height: 2.375rem; font-weight: 600; letter-spacing: -0.02em; }
+  @media (max-width: 639px) { .text-headline-lg { font-size: 1.5rem; line-height: 2rem; } }
+  .text-headline-md { font-size: 1.5rem; line-height: 2rem; font-weight: 600; }
+  .text-headline-sm { font-size: 1.25rem; line-height: 1.75rem; font-weight: 500; }
+  .text-body-lg { font-size: 1.125rem; line-height: 1.75rem; }
+  .text-body-md { font-size: 1rem; line-height: 1.5rem; }
+  .text-body-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  .text-label-md { font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; }
+  .text-label-sm { font-size: 0.75rem; line-height: 1rem; font-weight: 500; }
+}
+
+@layer base {
+  * { border-color: var(--border); outline-color: var(--ring); }
+  body { background-color: var(--background); color: var(--foreground); font-family: var(--font-sans); line-height: 1.6; }
+}

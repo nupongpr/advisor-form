@@ -1,0 +1,43 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useSurveyDraft } from "@/lib/use-survey-draft";
+
+export default function Home() {
+  const router = useRouter();
+  const { draft, setField } = useSurveyDraft();
+  const [touched, setTouched] = useState(false);
+  const code = draft.code.trim();
+
+  return (
+    <main className="mx-auto flex min-h-dvh max-w-200 flex-col justify-center px-4 py-10 sm:px-6">
+      <Card className="rounded-[1.5rem] shadow-soft border border-border">
+        <CardHeader>
+          <CardTitle className="text-2xl">แบบประเมินระบบ ThesisFlow</CardTitle>
+          <CardDescription className="leading-relaxed">
+            กรุณากรอกรหัส (โค้ด) ที่ได้รับ เพื่อเริ่มทำแบบประเมิน ใช้เวลาประมาณ 10–15 นาที
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="code">รหัสผู้ตอบ</Label>
+            <Input
+              id="code"
+              value={draft.code}
+              onChange={(e) => setField("code", e.target.value)}
+              placeholder="เช่น S01"
+              autoComplete="off"
+              className="focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
+            />
+            {touched && !code && <p className="text-sm text-destructive">กรุณากรอกรหัส</p>}
+          </div>
+          <Button className="w-full" onClick={() => (code ? router.push("/survey") : setTouched(true))}>เริ่มทำแบบประเมิน</Button>
+        </CardContent>
+      </Card>
+    </main>
+  );
+}

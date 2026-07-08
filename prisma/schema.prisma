@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Response {
+  id         String   @id @default(cuid())
+  code       String
+  role       String
+  ageBand    String
+  field      String?
+  experience String?
+  susScore   Float
+  createdAt  DateTime @default(now())
+  answers    Answer[]
+}
+
+model Answer {
+  id          String   @id @default(cuid())
+  responseId  String
+  response    Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  questionKey String
+  value       Int?
+  text        String?
+
+  @@index([responseId])
+  @@index([questionKey])
+}
