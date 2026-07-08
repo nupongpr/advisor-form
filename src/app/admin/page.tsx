@@ -26,6 +26,7 @@ export default async function AdminDashboard() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">แดชบอร์ดผู้ดูแล</h1>
         <div className="flex gap-2">
+          <a href="/admin/codes" className={buttonVariants({ variant: "outline" })}>จัดการโค้ด</a>
           <a href="/api/admin/export" className={buttonVariants({ variant: "outline" })}>ดาวน์โหลด CSV</a>
           <LogoutButton />
         </div>
