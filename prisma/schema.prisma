@@ -33,3 +33,10 @@ model Answer {
   @@index([responseId])
   @@index([questionKey])
 }
+
+model AccessCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
