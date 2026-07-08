@@ -12,10 +12,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!parsed.success) {
     return NextResponse.json({ error: "validation failed" }, { status: 400 });
   }
+
+  const existing = await prisma.accessCode.findUnique({ where: { id } });
+  if (!existing) {
+    return NextResponse.json({ error: "not found" }, { status: 404 });
+  }
+
   try {
     const code = await prisma.accessCode.update({ where: { id }, data: { active: parsed.data.active } });
     return NextResponse.json({ code });
-  } catch {
-    return NextResponse.json({ error: "not found" }, { status: 404 });
+  } catch (err) {
+    console.error("failed to update access code", err);
+    return NextResponse.json({ error: "failed to update" }, { status: 500 });
   }
 }
