@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { surveyPayloadSchema } from "@/lib/validation";
 import { scoreSus } from "@/lib/sus";
 import { toAnswerRows } from "@/lib/responses";
+import { isCodeUsable } from "@/lib/access-code";
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -18,6 +19,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "validation failed", issues: parsed.error.issues }, { status: 400 });
   }
   const p = parsed.data;
+
+  const codeRecord = await prisma.accessCode.findUnique({ where: { code: p.code } });
+  if (!isCodeUsable(codeRecord)) {
+    return NextResponse.json({ error: "invalid or inactive code" }, { status: 403 });
+  }
 
   let created;
   try {
