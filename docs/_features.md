@@ -46,25 +46,37 @@ Legend: `[x]` done & verified · `[~]` done, live-DB apply pending · `[ ]` not 
 - [x] Response detail page (role, frequency, SUS score, all answers)
 - [x] CSV export with UTF-8 BOM (`/api/admin/export`) — columns: id, code, role, frequency, susScore, createdAt, + all answer keys
 
-## 6. Data / infrastructure
+## 6. Access control — admin-issued codes
 
-- [x] Prisma 7 + PostgreSQL (Neon) via `@prisma/adapter-pg`; `Response` + `Answer` tables
-- [x] Migration `20260708072743_init` (applied to Neon)
-- [~] Migration `20260708085135_align_demographics_role_frequency` — **committed; apply to live Neon
-      with `prisma migrate deploy` (also runs automatically on Vercel build)**
+- [x] `AccessCode` table (code unique, active flag); migration `20260708134659_add_access_code`
+- [x] Respondents must enter a valid, **active** admin-issued code — checked at the landing page
+      (`POST /api/verify-code`, public) and enforced server-side on submit (`POST /api/responses` → 403)
+- [x] Codes are case-insensitive on entry (normalized/stored uppercase), reusable while active
+- [x] Admin page `/admin/codes`: generate random 8-char batches, copy-all, list, activate/deactivate
+      (`GET`/`POST /api/admin/codes`, `PATCH /api/admin/codes/[id]`)
+- [x] Pure gen/validate lib `src/lib/access-code.ts` + 7 unit tests; live E2E 16/16 green
+
+## 7. Data / infrastructure
+
+- [x] Prisma 7 + PostgreSQL (Neon) via `@prisma/adapter-pg`; `Response` + `Answer` + `AccessCode` tables
+- [x] Migrations applied to Neon: `20260708072743_init`, `20260708085135_align_demographics_role_frequency`,
+      `20260708134659_add_access_code`
 - [x] No Server Actions — API route handlers only
 
-## 7. Verification (this session)
+## 8. Verification
 
-- [x] `npx vitest run` → **28/28 pass**
+- [x] `npx vitest run` → **35/35 pass** (28 instrument + 7 access-code)
 - [x] `npx tsc --noEmit` → clean
 - [x] `npm run lint` → clean
 - [x] `npm run build` → succeeds
-- [x] UI walkthrough (Playwright) of every wizard step — Thai copy, new demographics, SUS anchors all correct
-- [~] Full live-DB submit E2E — pending the Neon migration apply (see §6)
+- [x] UI walkthrough (Playwright) of every wizard step — Thai copy, demographics, SUS anchors correct
+- [x] Access-codes live E2E 16/16 (generate → verify → toggle → submit gate 403/201 → CSV) + landing-gate UI
+- [x] Live DB migrations applied to Neon; test data cleaned up (DB pristine)
 
-## 8. Pending
+## 9. Pending
 
-- [ ] Apply migration `align_demographics_role_frequency` to live Neon (`prisma migrate deploy`)
 - [ ] **Vercel deploy** — import repo (Root Directory = default) + set env vars
-      (`DATABASE_URL`, `ADMIN_PASSWORD`, `COOKIE_SECRET`) in the Vercel dashboard
+      (`DATABASE_URL`, `ADMIN_PASSWORD`, `COOKIE_SECRET`) in the Vercel dashboard.
+      Note: the build runs `next build` only (no auto-migrate) — both migrations are already applied to Neon.
+- [ ] **Operational:** an admin must generate at least one code batch (`/admin/codes`) before anyone
+      can take the survey — otherwise the landing page rejects every code.
