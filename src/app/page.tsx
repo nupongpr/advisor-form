@@ -11,7 +11,29 @@ export default function Home() {
   const router = useRouter();
   const { draft, setField } = useSurveyDraft();
   const [touched, setTouched] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [error, setError] = useState("");
   const code = draft.code.trim();
+
+  async function start() {
+    if (!code) { setTouched(true); return; }
+    setChecking(true);
+    setError("");
+    try {
+      const res = await fetch("/api/verify-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (data.valid) router.push("/survey");
+      else setError("รหัสไม่ถูกต้องหรือถูกปิดใช้งาน");
+    } catch {
+      setError("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      setChecking(false);
+    }
+  }
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-200 flex-col justify-center px-4 py-10 sm:px-6">
@@ -28,14 +50,17 @@ export default function Home() {
             <Input
               id="code"
               value={draft.code}
-              onChange={(e) => setField("code", e.target.value)}
+              onChange={(e) => { setField("code", e.target.value); setError(""); }}
               placeholder="เช่น S01"
               autoComplete="off"
               className="focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
             />
             {touched && !code && <p className="text-sm text-destructive">กรุณากรอกรหัส</p>}
+            {error && <p className="text-sm text-destructive">{error}</p>}
           </div>
-          <Button className="w-full" onClick={() => (code ? router.push("/survey") : setTouched(true))}>เริ่มทำแบบประเมิน</Button>
+          <Button className="w-full" disabled={checking} onClick={start}>
+            {checking ? "กำลังตรวจสอบ…" : "เริ่มทำแบบประเมิน"}
+          </Button>
         </CardContent>
       </Card>
     </main>
