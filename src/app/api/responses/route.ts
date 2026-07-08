@@ -19,8 +19,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "validation failed", issues: parsed.error.issues }, { status: 400 });
   }
   const p = parsed.data;
+  const code = p.code.toUpperCase();
 
-  const codeRecord = await prisma.accessCode.findUnique({ where: { code: p.code } });
+  let codeRecord;
+  try {
+    codeRecord = await prisma.accessCode.findUnique({ where: { code } });
+  } catch (err) {
+    console.error("failed to verify access code", err);
+    return NextResponse.json({ error: "failed to verify code" }, { status: 500 });
+  }
   if (!isCodeUsable(codeRecord)) {
     return NextResponse.json({ error: "invalid or inactive code" }, { status: 403 });
   }
@@ -29,7 +36,7 @@ export async function POST(req: NextRequest) {
   try {
     created = await prisma.response.create({
       data: {
-        code: p.code, role: p.role, frequency: p.frequency,
+        code, role: p.role, frequency: p.frequency,
         susScore: scoreSus(p.sus),
         answers: { create: toAnswerRows(p) },
       },

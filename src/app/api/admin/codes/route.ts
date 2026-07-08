@@ -4,8 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { generateCodes, generateCodesSchema } from "@/lib/access-code";
 
 export async function GET() {
-  const codes = await prisma.accessCode.findMany({ orderBy: { createdAt: "desc" } });
-  return NextResponse.json({ codes });
+  try {
+    const codes = await prisma.accessCode.findMany({ orderBy: { createdAt: "desc" } });
+    return NextResponse.json({ codes });
+  } catch (err) {
+    console.error("failed to list access codes", err);
+    return NextResponse.json({ error: "failed to load" }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -15,9 +20,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "validation failed", issues: parsed.error.issues }, { status: 400 });
   }
 
-  const existing = new Set((await prisma.accessCode.findMany({ select: { code: true } })).map((r) => r.code));
-  const created = generateCodes(parsed.data.count, existing);
-  await prisma.accessCode.createMany({ data: created.map((code) => ({ code })) });
+  try {
+    const existing = new Set((await prisma.accessCode.findMany({ select: { code: true } })).map((r) => r.code));
+    const created = generateCodes(parsed.data.count, existing);
+    await prisma.accessCode.createMany({ data: created.map((code) => ({ code })) });
 
-  return NextResponse.json({ created }, { status: 201 });
+    return NextResponse.json({ created }, { status: 201 });
+  } catch (err) {
+    console.error("failed to generate access codes", err);
+    return NextResponse.json({ error: "failed to generate" }, { status: 500 });
+  }
 }

@@ -8,6 +8,13 @@ export async function POST(req: NextRequest) {
   const parsed = verifyCodeSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ valid: false });
 
-  const record = await prisma.accessCode.findUnique({ where: { code: parsed.data.code } });
-  return NextResponse.json({ valid: isCodeUsable(record) });
+  const code = parsed.data.code.toUpperCase();
+
+  try {
+    const record = await prisma.accessCode.findUnique({ where: { code } });
+    return NextResponse.json({ valid: isCodeUsable(record) });
+  } catch (err) {
+    console.error("verify-code lookup failed", err);
+    return NextResponse.json({ valid: false });
+  }
 }
