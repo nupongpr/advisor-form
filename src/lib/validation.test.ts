@@ -5,13 +5,13 @@ import { LIKERT_KEYS, SUS_KEYS } from "./questions";
 const fullLikert = Object.fromEntries(LIKERT_KEYS.map((k) => [k, 4]));
 const fullSus = Object.fromEntries(SUS_KEYS.map((k) => [k, 3]));
 const valid = {
-  code: "S01", role: "student", frequency: "weekly",
+  role: "student", frequency: "weekly",
   likert: fullLikert, sus: fullSus, open: { open_1: "ดี", open_2: "", open_3: "" },
 };
 
 describe("surveyPayloadSchema", () => {
   it("ผ่านเมื่อข้อมูลครบถูกต้อง", () => expect(surveyPayloadSchema.safeParse(valid).success).toBe(true));
-  it("ไม่ผ่านเมื่อโค้ดว่าง", () => expect(surveyPayloadSchema.safeParse({ ...valid, code: "" }).success).toBe(false));
+  it("ไม่ผ่านเมื่อ honeypot (website) ถูกกรอก", () => expect(surveyPayloadSchema.safeParse({ ...valid, website: "http://spam" }).success).toBe(false));
   it("ไม่ผ่านเมื่อ Likert ไม่ครบ", () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { sq_1, ...rest } = fullLikert as Record<string, number>;

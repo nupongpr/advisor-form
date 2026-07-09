@@ -25,8 +25,9 @@ export default async function ResponseDetail({ params }: { params: Promise<{ id:
         ← กลับ
       </Link>
       <Card className="mb-4 rounded-[1.5rem] shadow-soft border border-border">
-        <CardHeader><CardTitle>คำตอบของ {r.code}</CardTitle></CardHeader>
+        <CardHeader><CardTitle>รายละเอียดคำตอบ</CardTitle></CardHeader>
         <CardContent className="space-y-1 text-sm">
+          <p className="text-muted-foreground">รหัสอ้างอิง: {r.id.slice(0, 8)} · {new Date(r.createdAt).toLocaleString("th-TH")}</p>
           <p>บทบาท: {roleLabel}</p>
           <p>ความถี่ในการใช้งาน: {FREQUENCY_OPTIONS.find((o) => o.value === r.frequency)?.label ?? r.frequency}</p>
           <p>คะแนน SUS: <b>{r.susScore.toFixed(1)}</b></p>

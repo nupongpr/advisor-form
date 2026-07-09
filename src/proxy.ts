@@ -3,6 +3,21 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const { method } = req;
+
+  // CSRF defense: reject cross-origin state-changing requests to matched routes.
+  if (method !== "GET" && method !== "HEAD" && method !== "OPTIONS") {
+    const origin = req.headers.get("origin");
+    if (origin) {
+      let sameOrigin = false;
+      try {
+        sameOrigin = new URL(origin).host === req.headers.get("host");
+      } catch {}
+      if (!sameOrigin) {
+        return NextResponse.json({ error: "bad origin" }, { status: 403 });
+      }
+    }
+  }
 
   const isLoginRoute =
     pathname === "/admin/login" || pathname === "/api/admin/login" || pathname === "/api/admin/logout";

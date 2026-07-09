@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ export function SurveyWizard() {
   const { draft, loaded, setField, setLikert, setSus, setOpen, reset } = useSurveyDraft();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   // 0=ข้อมูลทั่วไป, 1..4=Likert, 5=ปลายเปิด, 6=SUS, 7=ทบทวน
   const totalSteps = 8;
@@ -33,20 +34,13 @@ export function SurveyWizard() {
   }, [step, draft]);
 
   if (!loaded) return null;
-  if (!draft.code.trim()) {
-    return (
-      <div className="p-8 text-center">
-        <p>ไม่พบรหัสผู้ตอบ</p>
-        <Button className="mt-4" onClick={() => router.push("/")}>กลับไปกรอกรหัส</Button>
-      </div>
-    );
-  }
 
   async function submit() {
     setSubmitting(true);
     const payload = {
-      code: draft.code.trim(), role: draft.role, frequency: draft.frequency,
+      role: draft.role, frequency: draft.frequency,
       likert: draft.likert, sus: draft.sus, open: draft.open,
+      website: honeypotRef.current?.value ?? "",
     };
     try {
       const res = await fetch("/api/responses", {
@@ -63,6 +57,16 @@ export function SurveyWizard() {
 
   return (
     <main className="mx-auto max-w-200 px-4 py-10 sm:px-6">
+      {/* honeypot: hidden from real users; bots that fill it are rejected server-side */}
+      <input
+        ref={honeypotRef}
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute left-[-9999px] top-0 h-0 w-0 opacity-0"
+      />
       <Progress value={progress} className="h-2.5 rounded-full mb-8" />
       <Card key={step} className="rounded-[1.5rem] shadow-soft border border-border animate-in fade-in-0 duration-300">
         <CardHeader>
@@ -125,7 +129,6 @@ export function SurveyWizard() {
 
           {step === 7 && (
             <div className="space-y-2 text-sm">
-              <p>โค้ด: <b>{draft.code}</b></p>
               <p>บทบาท: {ROLE_OPTIONS.find((r) => r.value === draft.role)?.label}</p>
               <p>ความถี่ในการใช้งาน: {FREQUENCY_OPTIONS.find((f) => f.value === draft.frequency)?.label}</p>
               <p>ตอบ Likert {LIKERT_KEYS.filter((k) => draft.likert[k]).length}/18 · SUS {SUS_KEYS.filter((k) => draft.sus[k]).length}/10</p>

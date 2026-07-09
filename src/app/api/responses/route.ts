@@ -4,9 +4,16 @@ import { prisma } from "@/lib/prisma";
 import { surveyPayloadSchema } from "@/lib/validation";
 import { scoreSus } from "@/lib/sus";
 import { toAnswerRows } from "@/lib/responses";
-import { isCodeUsable } from "@/lib/access-code";
+
+// Defense-in-depth cap; a valid payload is a few KB. Zod also bounds each field.
+const MAX_BODY_BYTES = 50_000;
 
 export async function POST(req: NextRequest) {
+  const declaredLength = Number(req.headers.get("content-length") ?? 0);
+  if (declaredLength > MAX_BODY_BYTES) {
+    return NextResponse.json({ error: "payload too large" }, { status: 413 });
+  }
+
   let body: unknown;
   try {
     body = await req.json();
@@ -16,27 +23,16 @@ export async function POST(req: NextRequest) {
 
   const parsed = surveyPayloadSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "validation failed", issues: parsed.error.issues }, { status: 400 });
+    // Do not echo validation issue details to the client.
+    return NextResponse.json({ error: "validation failed" }, { status: 400 });
   }
   const p = parsed.data;
-  const code = p.code.toUpperCase();
-
-  let codeRecord;
-  try {
-    codeRecord = await prisma.accessCode.findUnique({ where: { code } });
-  } catch (err) {
-    console.error("failed to verify access code", err);
-    return NextResponse.json({ error: "failed to verify code" }, { status: 500 });
-  }
-  if (!isCodeUsable(codeRecord)) {
-    return NextResponse.json({ error: "invalid or inactive code" }, { status: 403 });
-  }
 
   let created;
   try {
     created = await prisma.response.create({
       data: {
-        code, role: p.role, frequency: p.frequency,
+        role: p.role, frequency: p.frequency,
         susScore: scoreSus(p.sus),
         answers: { create: toAnswerRows(p) },
       },
@@ -53,7 +49,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   const responses = await prisma.response.findMany({
     orderBy: { createdAt: "desc" },
-    select: { id: true, code: true, role: true, frequency: true, susScore: true, createdAt: true },
+    select: { id: true, role: true, frequency: true, susScore: true, createdAt: true },
   });
   return NextResponse.json({ responses });
 }

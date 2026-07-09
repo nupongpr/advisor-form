@@ -26,7 +26,6 @@ export default async function AdminDashboard() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">แดชบอร์ดผู้ดูแล</h1>
         <div className="flex gap-2">
-          <a href="/admin/codes" className={buttonVariants({ variant: "outline" })}>จัดการโค้ด</a>
           <a href="/api/admin/export" className={buttonVariants({ variant: "outline" })}>ดาวน์โหลด CSV</a>
           <LogoutButton />
         </div>
@@ -76,7 +75,7 @@ export default async function AdminDashboard() {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted">
-                <TableHead className="font-semibold text-foreground">โค้ด</TableHead>
+                <TableHead className="font-semibold text-foreground">ลำดับ</TableHead>
                 <TableHead className="font-semibold text-foreground">บทบาท</TableHead>
                 <TableHead className="font-semibold text-foreground">SUS</TableHead>
                 <TableHead className="font-semibold text-foreground">เวลา</TableHead>
@@ -84,16 +83,16 @@ export default async function AdminDashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {responses.map((r) => (
+              {responses.map((r, i) => (
                 <TableRow key={r.id} className="border-0 even:bg-muted/40 hover:bg-accent/40">
-                  <TableCell className="font-medium">{r.code}</TableCell>
+                  <TableCell className="font-medium tabular-nums text-muted-foreground">#{total - i}</TableCell>
                   <TableCell><Badge variant="secondary" className="rounded-full">{roleLabel(r.role)}</Badge></TableCell>
                   <TableCell className="tabular-nums">{r.susScore.toFixed(1)}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{new Date(r.createdAt).toLocaleString("th-TH")}</TableCell>
                   <TableCell><Link className="text-primary underline" href={`/admin/responses/${r.id}`}>ดู</Link></TableCell>
                 </TableRow>
               ))}
-              {total === 0 && <TableRow className="border-0"><TableCell colSpan={5} className="text-center text-muted-foreground">ยังไม่มีคำตอบ</TableCell></TableRow>}
+              {total === 0 && <TableRow className="border-0"><TableCell colSpan={4} className="text-center text-muted-foreground">ยังไม่มีคำตอบ</TableCell></TableRow>}
             </TableBody>
           </Table>
         </CardContent>

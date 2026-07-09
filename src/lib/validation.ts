@@ -11,12 +11,13 @@ const openMap = z
   .partial();
 
 export const surveyPayloadSchema = z.object({
-  code: z.string().trim().min(1, "กรุณากรอกโค้ด").max(64),
   role: z.enum(["student", "advisor", "staff"]),
   frequency: z.enum(["daily", "weekly", "monthly", "rarely"]),
   likert: requiredScaleMap(LIKERT_KEYS),
   sus: requiredScaleMap(SUS_KEYS),
   open: openMap.optional(),
+  // honeypot: real users leave this empty; bots that fill it fail validation.
+  website: z.string().max(0).optional(),
 });
 
 export type SurveyPayload = z.infer<typeof surveyPayloadSchema>;

@@ -2,12 +2,12 @@
 import { useCallback, useEffect, useState } from "react";
 
 export type SurveyDraft = {
-  code: string; role?: string; frequency?: string;
+  role?: string; frequency?: string;
   likert: Record<string, number>; sus: Record<string, number>; open: Record<string, string>;
 };
 
 const KEY = "thesis-form-draft";
-const empty: SurveyDraft = { code: "", likert: {}, sus: {}, open: {} };
+const empty: SurveyDraft = { likert: {}, sus: {}, open: {} };
 
 export function useSurveyDraft() {
   const [draft, setDraft] = useState<SurveyDraft>(empty);
