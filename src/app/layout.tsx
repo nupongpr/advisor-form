@@ -11,8 +11,8 @@ const thai = IBM_Plex_Sans_Thai({
 });
 
 export const metadata: Metadata = {
-  title: "แบบประเมินระบบ ThesisFlow",
-  description: "แบบสอบถามและแบบวัดการใช้งานระบบ ThesisFlow (EXP002)",
+  title: "แบบประเมินระบบ AI thesis co-advisor",
+  description: "แบบสอบถามและแบบวัดการใช้งานระบบ AI thesis co-advisor (EXP002)",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

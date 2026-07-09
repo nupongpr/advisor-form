@@ -1,5 +1,5 @@
 ---
-name: ThesisFlow Evaluation System
+name: AI thesis co-advisor Evaluation System
 colors:
   surface: '#f8f9fa'
   surface-dim: '#d9dadb'

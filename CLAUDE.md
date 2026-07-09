@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status: this repo IS the EXP002 app
 
-This repository **is** the EXP002 "ThesisFlow" evaluation form — a **Next.js 16** project
+This repository **is** the EXP002 "AI thesis co-advisor" evaluation form (product UI brand;
+internally codenamed "ThesisFlow") — a **Next.js 16** project
 (App Router, `src/` dir, React 19, Tailwind v4) at the repo root. Deployed on **Vercel** from
 `https://github.com/nupongpr/advisor-form` (branch `main`).
 
@@ -46,9 +47,11 @@ This repository **is** the EXP002 "ThesisFlow" evaluation form — a **Next.js 1
 ## What this app is
 
 This app digitizes **EXP002 rev.1** — a Thai questionnaire + usability instrument used to
-evaluate **"ThesisFlow"** (aka "Thesis Navigator" / "Thesis Flow System"), an AI-assisted graduate-
+evaluate **"AI thesis co-advisor"** — the platform's current UI brand. It was internally
+codenamed **"ThesisFlow"** (aka "Thesis Navigator" / "Thesis Flow System"), which still appears
+in the repo name, git history, migrations, and the source PDF. It is an AI-assisted graduate-
 thesis management platform. Respondents — **students, advisors, or graduate-studies staff**
-(นักศึกษา / อาจารย์ที่ปรึกษา / เจ้าหน้าที่บัณฑิตศึกษา) — rate ThesisFlow after using it. This web
+(นักศึกษา / อาจารย์ที่ปรึกษา / เจ้าหน้าที่บัณฑิตศึกษา) — rate the platform after using it. This web
 form replaces the paper instrument.
 
 ### ThesisFlow domain (what the questions refer to)

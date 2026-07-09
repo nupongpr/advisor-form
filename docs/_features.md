@@ -1,4 +1,4 @@
-# Features & Work Checklist — EXP002 "ThesisFlow" evaluation form
+# Features & Work Checklist — EXP002 "AI thesis co-advisor" evaluation form
 
 A living checklist of what the app does and what's been built. Source instrument:
 `docs/2569-EXP002_rv1_instr.pdf` (the web form digitizes **pages 13–15**). UI language: Thai.
