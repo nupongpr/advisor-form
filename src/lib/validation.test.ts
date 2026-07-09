@@ -26,4 +26,10 @@ describe("surveyPayloadSchema", () => {
     expect(surveyPayloadSchema.safeParse(noFreq).success).toBe(false);
   });
   it("ไม่ผ่านเมื่อความถี่การใช้งานผิด", () => expect(surveyPayloadSchema.safeParse({ ...valid, frequency: "yearly" }).success).toBe(false));
+  it("language ค่าเริ่มต้นเป็น th เมื่อไม่ส่ง", () => {
+    const r = surveyPayloadSchema.safeParse(valid);
+    expect(r.success && r.data.language).toBe("th");
+  });
+  it("รับ language เป็น en ได้", () => expect(surveyPayloadSchema.safeParse({ ...valid, language: "en" }).success).toBe(true));
+  it("ไม่ผ่านเมื่อ language ไม่ใช่ th/en", () => expect(surveyPayloadSchema.safeParse({ ...valid, language: "fr" }).success).toBe(false));
 });

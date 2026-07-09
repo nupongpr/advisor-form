@@ -16,6 +16,7 @@ model Response {
   id         String   @id @default(cuid())
   role       String
   frequency  String
+  language   String   @default("th")
   susScore   Float
   createdAt  DateTime @default(now())
   answers    Answer[]

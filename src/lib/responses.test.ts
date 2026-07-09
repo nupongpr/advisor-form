@@ -4,7 +4,7 @@ import { LIKERT_KEYS, SUS_KEYS } from "./questions";
 import type { SurveyPayload } from "./validation";
 
 const payload = {
-  role: "student", frequency: "weekly",
+  role: "student", frequency: "weekly", language: "th",
   likert: Object.fromEntries(LIKERT_KEYS.map((k) => [k, 4])),
   sus: Object.fromEntries(SUS_KEYS.map((k) => [k, 3])),
   open: { open_1: "ดีมาก", open_2: "", open_3: "  " },

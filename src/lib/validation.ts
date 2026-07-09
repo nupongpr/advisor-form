@@ -13,6 +13,8 @@ const openMap = z
 export const surveyPayloadSchema = z.object({
   role: z.enum(["student", "advisor", "staff"]),
   frequency: z.enum(["daily", "weekly", "monthly", "rarely"]),
+  // UI language the respondent used; defaults to Thai when omitted (older clients).
+  language: z.enum(["th", "en"]).default("th"),
   likert: requiredScaleMap(LIKERT_KEYS),
   sus: requiredScaleMap(SUS_KEYS),
   open: openMap.optional(),

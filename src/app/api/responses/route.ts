@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   try {
     created = await prisma.response.create({
       data: {
-        role: p.role, frequency: p.frequency,
+        role: p.role, frequency: p.frequency, language: p.language,
         susScore: scoreSus(p.sus),
         answers: { create: toAnswerRows(p) },
       },
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   const responses = await prisma.response.findMany({
     orderBy: { createdAt: "desc" },
-    select: { id: true, role: true, frequency: true, susScore: true, createdAt: true },
+    select: { id: true, role: true, frequency: true, language: true, susScore: true, createdAt: true },
   });
   return NextResponse.json({ responses });
 }

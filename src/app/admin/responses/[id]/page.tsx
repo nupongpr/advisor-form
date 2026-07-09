@@ -30,6 +30,7 @@ export default async function ResponseDetail({ params }: { params: Promise<{ id:
           <p className="text-muted-foreground">รหัสอ้างอิง: {r.id.slice(0, 8)} · {new Date(r.createdAt).toLocaleString("th-TH")}</p>
           <p>บทบาท: {roleLabel}</p>
           <p>ความถี่ในการใช้งาน: {FREQUENCY_OPTIONS.find((o) => o.value === r.frequency)?.label ?? r.frequency}</p>
+          <p>ภาษาที่ใช้ตอบ: {r.language === "en" ? "อังกฤษ (English)" : "ไทย"}</p>
           <p>คะแนน SUS: <b>{r.susScore.toFixed(1)}</b></p>
         </CardContent>
       </Card>

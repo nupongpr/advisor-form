@@ -6,12 +6,12 @@ export async function GET() {
   const responses = await prisma.response.findMany({ orderBy: { createdAt: "asc" }, include: { answers: true } });
 
   const answerCols = [...LIKERT_KEYS, ...SUS_KEYS, ...OPEN_KEYS];
-  const headers = ["id", "role", "frequency", "susScore", "createdAt", ...answerCols];
+  const headers = ["id", "role", "frequency", "language", "susScore", "createdAt", ...answerCols];
 
   const rows = responses.map((r) => {
     const map = new Map(r.answers.map((a) => [a.questionKey, a.value ?? a.text ?? ""]));
     return [
-      r.id, r.role, r.frequency,
+      r.id, r.role, r.frequency, r.language,
       r.susScore, r.createdAt.toISOString(),
       ...answerCols.map((k) => map.get(k) ?? ""),
     ];
